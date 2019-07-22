@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.flowable.org/processdef">
+  <process id="atividadePerfuracao" name="atividade perfuracao" isExecutable="true">
+    <documentation>O modelo descreve as etapas realizadas para uma atividade de mineiração.</documentation>
+    <startEvent id="criaAtividadePerfuracao" name="Criar atividade de perfuração para operador da mineiradora" flowable:formFieldValidation="true">
+      <extensionElements>
+        <flowable:formProperty id="id" name="id" type="long" required="true"></flowable:formProperty>
+        <flowable:formProperty id="operadorMineiradoraId" name="operadorMineiradoraId" type="long"></flowable:formProperty>
+        <flowable:formProperty id="gestorId" name="gestorId" type="long"></flowable:formProperty>
+        <flowable:formProperty id="dataAtividade" name="dataAtividade" type="date" datePattern="MM-dd-yyyy hh:mm"></flowable:formProperty>
+        <flowable:formProperty id="dataPrevisaoTerminoAtividade" name="dataPrevisaoTerminoAtividade" type="date" datePattern="MM-dd-yyyy hh:mm"></flowable:formProperty>
+        <flowable:formProperty id="observacoes" name="observacoes" type="string"></flowable:formProperty>
+      </extensionElements>
+    </startEvent>
+    <userTask id="organizaLocalExtracao" name="Organizar local para extração do minério" flowable:assignee="${operadorMineiradoraId}" flowable:formKey="organizaLocalExtracao" flowable:formFieldValidation="true">
+      <extensionElements>
+        <modeler:initiator-can-complete xmlns:modeler="http://flowable.org/modeler"><![CDATA[false]]></modeler:initiator-can-complete>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="sid-831AFAE7-F2F0-4376-80A6-E6963419A5C7" sourceRef="criaAtividadePerfuracao" targetRef="organizaLocalExtracao"></sequenceFlow>
+    <userTask id="identificaFalhaNasRochas" name="Identificar falhas nas rochas para remoção" flowable:assignee="${operadorMineiradoraId}" flowable:formFieldValidation="true">
+      <extensionElements>
+        <modeler:initiator-can-complete xmlns:modeler="http://flowable.org/modeler"><![CDATA[false]]></modeler:initiator-can-complete>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="sid-48E93D49-200C-463C-A643-33F2FCE8F3C1" sourceRef="organizaLocalExtracao" targetRef="identificaFalhaNasRochas"></sequenceFlow>
+    <exclusiveGateway id="decisaoDesmonte"></exclusiveGateway>
+    <sequenceFlow id="sid-C0F18BC2-D39D-42D7-A567-2BD56A356423" sourceRef="identificaFalhaNasRochas" targetRef="decisaoDesmonte"></sequenceFlow>
+    <userTask id="desmontaRochaExplosivos" name="Desmontar rochas com explosivos" flowable:assignee="${operadorMineiradoraId}" flowable:formFieldValidation="true">
+      <extensionElements>
+        <modeler:initiator-can-complete xmlns:modeler="http://flowable.org/modeler"><![CDATA[false]]></modeler:initiator-can-complete>
+      </extensionElements>
+    </userTask>
+    <userTask id="desmontaRochaEquipamentos" name="Desmontar rochas com equipamentos mecânicos" flowable:assignee="${operadorMineiradoraId}" flowable:formFieldValidation="true">
+      <extensionElements>
+        <modeler:initiator-can-complete xmlns:modeler="http://flowable.org/modeler"><![CDATA[false]]></modeler:initiator-can-complete>
+      </extensionElements>
+    </userTask>
+    <exclusiveGateway id="decisaoProblemaOuFinalizacao"></exclusiveGateway>
+    <sequenceFlow id="sid-1A16F9C1-E80F-4DF9-A578-AD2DA898C5A0" sourceRef="desmontaRochaExplosivos" targetRef="decisaoProblemaOuFinalizacao"></sequenceFlow>
+    <endEvent id="disponibilizaMinerioParaTransporte" name="Disponibilizar minério para atividades relacionadas a transporte"></endEvent>
+    <sequenceFlow id="sid-3415D027-1918-4A11-8319-C39794E8A5FA" sourceRef="desmontaRochaEquipamentos" targetRef="decisaoProblemaOuFinalizacao"></sequenceFlow>
+    <userTask id="registraProblema" name="Registrar problema" flowable:assignee="${operadorMineiradoraId}" flowable:formFieldValidation="true">
+      <extensionElements>
+        <modeler:initiator-can-complete xmlns:modeler="http://flowable.org/modeler"><![CDATA[false]]></modeler:initiator-can-complete>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="sid-4BDE4C43-1673-4E50-998B-1C5203B643EF" sourceRef="registraProblema" targetRef="disponibilizaMinerioParaTransporte"></sequenceFlow>
+    <sequenceFlow id="sid-8534A588-9604-4D62-BD4A-B20BC93E3F5B" sourceRef="decisaoDesmonte" targetRef="desmontaRochaExplosivos">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${actionType == "explosivos"}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="sid-6725968F-342A-465D-AE42-94B434808463" sourceRef="decisaoDesmonte" targetRef="desmontaRochaEquipamentos">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${actionType == "equipamentos"}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="sid-3C2495E2-2FA9-4F62-890B-D86B83C61191" sourceRef="decisaoProblemaOuFinalizacao" targetRef="registraProblema">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${actionType == "problema"}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="sid-F684DF09-8F57-448C-A518-1C52DD092989" sourceRef="decisaoProblemaOuFinalizacao" targetRef="disponibilizaMinerioParaTransporte">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${actionType == "fimAtividadePerfuracao"}]]></conditionExpression>
+    </sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_atividadePerfuracao">
+    <bpmndi:BPMNPlane bpmnElement="atividadePerfuracao" id="BPMNPlane_atividadePerfuracao">
+      <bpmndi:BPMNShape bpmnElement="criaAtividadePerfuracao" id="BPMNShape_criaAtividadePerfuracao">
+        <omgdc:Bounds height="30.0" width="30.0" x="165.0" y="195.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="organizaLocalExtracao" id="BPMNShape_organizaLocalExtracao">
+        <omgdc:Bounds height="80.0" width="100.0" x="255.0" y="120.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="identificaFalhaNasRochas" id="BPMNShape_identificaFalhaNasRochas">
+        <omgdc:Bounds height="80.0" width="100.0" x="400.0" y="120.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="decisaoDesmonte" id="BPMNShape_decisaoDesmonte">
+        <omgdc:Bounds height="40.0" width="40.0" x="540.0" y="140.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="desmontaRochaExplosivos" id="BPMNShape_desmontaRochaExplosivos">
+        <omgdc:Bounds height="80.0" width="100.0" x="625.0" y="30.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="desmontaRochaEquipamentos" id="BPMNShape_desmontaRochaEquipamentos">
+        <omgdc:Bounds height="80.0" width="100.0" x="625.0" y="210.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="decisaoProblemaOuFinalizacao" id="BPMNShape_decisaoProblemaOuFinalizacao">
+        <omgdc:Bounds height="40.0" width="40.0" x="780.0" y="140.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="disponibilizaMinerioParaTransporte" id="BPMNShape_disponibilizaMinerioParaTransporte">
+        <omgdc:Bounds height="28.0" width="28.0" x="915.0" y="240.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="registraProblema" id="BPMNShape_registraProblema">
+        <omgdc:Bounds height="80.0" width="100.0" x="879.0" y="30.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="sid-3415D027-1918-4A11-8319-C39794E8A5FA" id="BPMNEdge_sid-3415D027-1918-4A11-8319-C39794E8A5FA">
+        <omgdi:waypoint x="724.9499999999999" y="214.0"></omgdi:waypoint>
+        <omgdi:waypoint x="788.3720930232557" y="168.3511627906977"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-1A16F9C1-E80F-4DF9-A578-AD2DA898C5A0" id="BPMNEdge_sid-1A16F9C1-E80F-4DF9-A578-AD2DA898C5A0">
+        <omgdi:waypoint x="724.9499999999999" y="70.0"></omgdi:waypoint>
+        <omgdi:waypoint x="752.5" y="70.0"></omgdi:waypoint>
+        <omgdi:waypoint x="752.5" y="160.5"></omgdi:waypoint>
+        <omgdi:waypoint x="780.5" y="160.5"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-6725968F-342A-465D-AE42-94B434808463" id="BPMNEdge_sid-6725968F-342A-465D-AE42-94B434808463">
+        <omgdi:waypoint x="579.4274940617577" y="160.5"></omgdi:waypoint>
+        <omgdi:waypoint x="602.5" y="160.5"></omgdi:waypoint>
+        <omgdi:waypoint x="602.5" y="250.0"></omgdi:waypoint>
+        <omgdi:waypoint x="624.999999999986" y="250.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-F684DF09-8F57-448C-A518-1C52DD092989" id="BPMNEdge_sid-F684DF09-8F57-448C-A518-1C52DD092989">
+        <omgdi:waypoint x="800.5" y="179.43987713675216"></omgdi:waypoint>
+        <omgdi:waypoint x="800.5" y="254.0"></omgdi:waypoint>
+        <omgdi:waypoint x="915.0" y="254.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-8534A588-9604-4D62-BD4A-B20BC93E3F5B" id="BPMNEdge_sid-8534A588-9604-4D62-BD4A-B20BC93E3F5B">
+        <omgdi:waypoint x="579.4274940617577" y="160.5"></omgdi:waypoint>
+        <omgdi:waypoint x="602.5" y="160.5"></omgdi:waypoint>
+        <omgdi:waypoint x="602.5" y="70.0"></omgdi:waypoint>
+        <omgdi:waypoint x="624.9999999999924" y="70.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-3C2495E2-2FA9-4F62-890B-D86B83C61191" id="BPMNEdge_sid-3C2495E2-2FA9-4F62-890B-D86B83C61191">
+        <omgdi:waypoint x="819.4307026476578" y="160.5"></omgdi:waypoint>
+        <omgdi:waypoint x="849.5" y="160.5"></omgdi:waypoint>
+        <omgdi:waypoint x="849.5" y="70.0"></omgdi:waypoint>
+        <omgdi:waypoint x="878.9999999999961" y="70.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-4BDE4C43-1673-4E50-998B-1C5203B643EF" id="BPMNEdge_sid-4BDE4C43-1673-4E50-998B-1C5203B643EF">
+        <omgdi:waypoint x="929.0" y="109.95"></omgdi:waypoint>
+        <omgdi:waypoint x="929.0" y="240.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-831AFAE7-F2F0-4376-80A6-E6963419A5C7" id="BPMNEdge_sid-831AFAE7-F2F0-4376-80A6-E6963419A5C7">
+        <omgdi:waypoint x="194.94999098868064" y="210.0"></omgdi:waypoint>
+        <omgdi:waypoint x="225.0" y="210.0"></omgdi:waypoint>
+        <omgdi:waypoint x="225.0" y="160.0"></omgdi:waypoint>
+        <omgdi:waypoint x="254.9999999999813" y="160.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-48E93D49-200C-463C-A643-33F2FCE8F3C1" id="BPMNEdge_sid-48E93D49-200C-463C-A643-33F2FCE8F3C1">
+        <omgdi:waypoint x="354.9499999999907" y="160.0"></omgdi:waypoint>
+        <omgdi:waypoint x="399.9999999999807" y="160.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-C0F18BC2-D39D-42D7-A567-2BD56A356423" id="BPMNEdge_sid-C0F18BC2-D39D-42D7-A567-2BD56A356423">
+        <omgdi:waypoint x="499.9499999999949" y="160.2260180995475"></omgdi:waypoint>
+        <omgdi:waypoint x="540.4090909090903" y="160.4090909090909"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

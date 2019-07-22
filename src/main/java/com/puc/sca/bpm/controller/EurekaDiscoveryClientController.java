@@ -20,8 +20,8 @@ import com.netflix.appinfo.InstanceInfo;
 import com.netflix.discovery.EurekaClient;
 
 @RestController
-@RequestMapping("processos")
-public class ProcessoController {
+@RequestMapping("eureka")
+public class EurekaDiscoveryClientController {
 	
 	// Exemplo de descoberta dinâmica de microserviço para obter a url
 	@Autowired
