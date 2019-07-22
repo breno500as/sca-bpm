@@ -20,7 +20,6 @@ public class AtividadePerfuracao {
 	@NotNull
 	private Long operadorMineiradoraId;
 
-	@NotNull
 	private Long gestorId;
 
 	private Date dataAtividade = new Date();

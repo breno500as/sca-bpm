@@ -42,7 +42,6 @@ public class AtividadePerfuracaoController {
 		
 		variables.put("id", atividadePerfuracao.getId());
 		variables.put("operadorMineiradoraId", atividadePerfuracao.getOperadorMineiradoraId());
-		variables.put("gestorId", atividadePerfuracao.getGestorId());
 		variables.put("dataAtividade", atividadePerfuracao.getDataAtividade());
 		variables.put("dataPrevisaoTerminoAtividade", atividadePerfuracao.getDataPrevisaoTerminoAtividade());
 		variables.put("observacoes", atividadePerfuracao.getObservacoes());
