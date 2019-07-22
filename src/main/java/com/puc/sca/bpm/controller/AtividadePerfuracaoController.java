@@ -69,9 +69,13 @@ public class AtividadePerfuracaoController {
 	public String atualizaAtividadePerfuracao(@PathVariable("operadorMineiradoraId") String operadorMineiradoraId, @RequestBody Map<String, Object> data) {
 
 		Task task = this.taskService.createTaskQuery().taskAssignee(operadorMineiradoraId).singleResult();
-
-		this.taskService.complete(task.getId(), data);
-
+		
+		Boolean complete = (Boolean) data.get("complete");
+		
+		if (complete) {
+			this.taskService.complete(task.getId(), data);
+		}
+		
 		return "OK";
 	}
 }
