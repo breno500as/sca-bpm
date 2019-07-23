@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.flowable.engine.RuntimeService;
 import org.flowable.engine.TaskService;
 import org.flowable.task.api.Task;
@@ -34,13 +36,15 @@ public class AtividadePerfuracaoController {
 	private TaskService taskService;
 	
 	@PostMapping
-	public String startaProcessoAtividadePerfuracao(@RequestBody AtividadePerfuracao atividadePerfuracao) {
+	public String startaProcessoAtividadePerfuracao(@RequestBody AtividadePerfuracao atividadePerfuracao, HttpServletRequest request) {
 
 		this.atividadePerfuracaoRepository.save(atividadePerfuracao);
 		
 		Map<String, Object> variables = new HashMap<String, Object>();
 		
 		variables.put("id", atividadePerfuracao.getId());
+	 
+		variables.put("gestorId", request.getParameter("idUsuarioLogado"));
 		variables.put("operadorMineiradoraId", atividadePerfuracao.getOperadorMineiradoraId());
 		variables.put("dataAtividade", atividadePerfuracao.getDataAtividade());
 		variables.put("dataPrevisaoTerminoAtividade", atividadePerfuracao.getDataPrevisaoTerminoAtividade());
@@ -72,7 +76,10 @@ public class AtividadePerfuracaoController {
 		Boolean complete = (Boolean) data.get("complete");
 		
 		if (complete) {
-			this.taskService.complete(task.getId(), data);
+			String actionType = (String) data.get("actionType");
+			HashMap<String, Object> variables = new HashMap<String, Object>();
+			variables.put("actionType", actionType);
+			this.taskService.complete(task.getId(), variables);
 		}
 		
 		return "OK";
