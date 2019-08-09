@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.puc.sca.bpm.entity.AtividadePerfuracao;
 import com.puc.sca.bpm.repository.AtividadePerfuracaoRepository;
+import com.puc.sca.integration.util.Constants;
 
 @RestController
 @RequestMapping("atividades-perfuracao")
@@ -44,7 +45,7 @@ public class AtividadePerfuracaoController {
 		
 		variables.put("id", atividadePerfuracao.getId());
 	 
-		variables.put("gestorId", request.getParameter("idUsuarioLogado"));
+		variables.put("gestorId", request.getParameter(Constants.ID_USUARIO_LOGADO));
 		variables.put("operadorMineiradoraId", atividadePerfuracao.getOperadorMineiradoraId());
 		variables.put("dataAtividade", atividadePerfuracao.getDataAtividade());
 		variables.put("dataPrevisaoTerminoAtividade", atividadePerfuracao.getDataPrevisaoTerminoAtividade());

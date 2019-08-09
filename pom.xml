@@ -47,6 +47,12 @@
 			<artifactId>flowable-spring-boot-starter</artifactId>
 			<version>6.4.1</version>
 		</dependency>
+		
+	    <dependency>
+			<groupId>com.puc.sca.integration.util</groupId>
+			<artifactId>sca-integration-util</artifactId>
+			<version>1.0.0</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.postgresql</groupId>
