@@ -32,7 +32,7 @@ public class ScaBpmApplicationTests {
 	
 	private Map<String, Object> variables;
 	
-	private static final Long OPERADOR_MINEIRADORA_ID = 7L;
+	private static final Long USUARIO_MINEIRADORA_ID = 7L;
 
 	@Test
 	public void testBpm() {
@@ -40,7 +40,7 @@ public class ScaBpmApplicationTests {
 		// Mock
 		AtividadePerfuracao atividadePerfuracao = new AtividadePerfuracao();
 		atividadePerfuracao.setGestorId(1L);
-		atividadePerfuracao.setOperadorMineiradoraId(OPERADOR_MINEIRADORA_ID);
+		atividadePerfuracao.setUsuarioMineradoraId(USUARIO_MINEIRADORA_ID);
 		atividadePerfuracao.setObservacoes("Na área de extração devem ser realizados instalações de cabos elétricos");
 		Calendar c = Calendar.getInstance();
 		c.add(Calendar.HOUR, 10);
@@ -50,9 +50,9 @@ public class ScaBpmApplicationTests {
 		// Cria o processo
 		this.variables = new HashMap<String, Object>();
 		this.variables.put("id", atividadePerfuracao.getId());
-		this.variables.put("operadorMineiradoraId", atividadePerfuracao.getOperadorMineiradoraId());
+		this.variables.put("operadorMineiradoraId", atividadePerfuracao.getUsuarioMineradoraId());
 		this.variables.put("gestorId", atividadePerfuracao.getGestorId());
-		this.variables.put("dataAtividade", atividadePerfuracao.getDataAtividade());
+		this.variables.put("dataAtividade", atividadePerfuracao.getDataInicioAtividade());
 		this.variables.put("dataPrevisaoTerminoAtividade", atividadePerfuracao.getDataPrevisaoTerminoAtividade());
 		this.variables.put("observacoes", atividadePerfuracao.getObservacoes());
 		
@@ -63,7 +63,7 @@ public class ScaBpmApplicationTests {
 		// Tarefa 1 - organizaLocalExtracao
 		Task taskOrganizarLocal = this.taskService
 				                        .createTaskQuery()
-				                        .taskAssignee(OPERADOR_MINEIRADORA_ID.toString())
+				                        .taskAssignee(USUARIO_MINEIRADORA_ID.toString())
 				                        .singleResult();
 
 		Assert.assertEquals("Organizar local para extração do minério", taskOrganizarLocal.getName());
@@ -73,7 +73,7 @@ public class ScaBpmApplicationTests {
 		// Tarefa 2 - identificaFalhaNasRochas
 		Task taskFalhasRochas = this.taskService
 				                    .createTaskQuery()
-				                    .taskAssignee(OPERADOR_MINEIRADORA_ID.toString())
+				                    .taskAssignee(USUARIO_MINEIRADORA_ID.toString())
 			   	                    .singleResult();
 
 		Assert.assertEquals("Identificar falhas nas rochas para remoção", taskFalhasRochas.getName());
@@ -87,7 +87,7 @@ public class ScaBpmApplicationTests {
 		// Tarefa 2 - taskDesmontarExplosivos
 		Task taskDesmontarExplosivos = this.taskService
 				                               .createTaskQuery()
-				                               .taskAssignee(OPERADOR_MINEIRADORA_ID.toString())
+				                               .taskAssignee(USUARIO_MINEIRADORA_ID.toString())
 				                               .singleResult();
 		 
         Assert.assertEquals("Desmontar rochas com explosivos", taskDesmontarExplosivos.getName());

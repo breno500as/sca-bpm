@@ -37,40 +37,44 @@ public class AtividadePerfuracaoController {
 	private TaskService taskService;
 	
 	@PostMapping
-	public String startaProcessoAtividadePerfuracao(@RequestBody AtividadePerfuracao atividadePerfuracao, HttpServletRequest request) {
+	public AtividadePerfuracao startaProcessoAtividadePerfuracao(@RequestBody AtividadePerfuracao atividadePerfuracao, HttpServletRequest request) {
 
-		this.atividadePerfuracaoRepository.save(atividadePerfuracao);
+		String idUsuarioLogado = request.getParameter(Constants.ID_USUARIO_LOGADO);
+		
+		atividadePerfuracao.setGestorId(Long.parseLong(idUsuarioLogado));
+		AtividadePerfuracao atv = this.atividadePerfuracaoRepository.save(atividadePerfuracao);
 		
 		Map<String, Object> variables = new HashMap<String, Object>();
 		
 		variables.put("id", atividadePerfuracao.getId());
-	 
-		variables.put("gestorId", request.getParameter(Constants.ID_USUARIO_LOGADO));
-		variables.put("operadorMineiradoraId", atividadePerfuracao.getOperadorMineiradoraId());
-		variables.put("dataAtividade", atividadePerfuracao.getDataAtividade());
+		variables.put("gestorId", idUsuarioLogado);
+		variables.put("usuarioMineradoraId", atividadePerfuracao.getUsuarioMineradoraId());
+		variables.put("dataAtividade", atividadePerfuracao.getDataInicioAtividade());
 		variables.put("dataPrevisaoTerminoAtividade", atividadePerfuracao.getDataPrevisaoTerminoAtividade());
 		variables.put("observacoes", atividadePerfuracao.getObservacoes());
 		
 	 
 		this.runtimeService.startProcessInstanceByKey("atividadePerfuracao", variables);
 		
-		return "OK";
+		return atv;
+		
 	}
 	
-	@GetMapping("{operadorMineiradoraId}")
-	public List<String> getTarefasPorOperadorMineiradora(@PathVariable("operadorMineiradoraId") String operadorMineiradoraId) {
-		
+	@GetMapping("{id}")
+	public AtividadePerfuracao findById(@PathVariable(value = "id") Long id) {
+		return this.atividadePerfuracaoRepository.findById(id).get();
+	}
 	
+	@GetMapping("tarefas-por-operador/{usuarioMineiradoraId}")
+	public List<String> getTarefasPorOperadorMineiradora(@PathVariable("usuarioMineiradoraId") String operadorMineiradoraId) {
 		return this.taskService
                 .createTaskQuery()
                 .taskAssignee(operadorMineiradoraId)
                 .list().stream().map(task -> task.getName()).collect(Collectors.toList());
-		
-		 
 	}
 	
 	@PutMapping("{operadorMineiradoraId}")
-	public String atualizaAtividadePerfuracao(@PathVariable("operadorMineiradoraId") String operadorMineiradoraId, @RequestBody Map<String, Object> data) {
+	public void atualizaAtividadePerfuracao(@PathVariable("operadorMineiradoraId") String operadorMineiradoraId, @RequestBody Map<String, Object> data) {
 
 		Task task = this.taskService.createTaskQuery().taskAssignee(operadorMineiradoraId).singleResult();
 		
@@ -82,7 +86,5 @@ public class AtividadePerfuracaoController {
 			variables.put("actionType", actionType);
 			this.taskService.complete(task.getId(), variables);
 		}
-		
-		return "OK";
 	}
 }

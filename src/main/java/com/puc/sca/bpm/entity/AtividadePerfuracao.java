@@ -18,11 +18,11 @@ public class AtividadePerfuracao {
 	private Long id;
 
 	@NotNull
-	private Long operadorMineiradoraId;
+	private Long usuarioMineradoraId;
 
 	private Long gestorId;
 
-	private Date dataAtividade = new Date();
+	private Date dataInicioAtividade = new Date();
 
 	private Date dataPrevisaoTerminoAtividade = new Date();
 
@@ -39,20 +39,20 @@ public class AtividadePerfuracao {
 		this.id = id;
 	}
 
-	public Long getOperadorMineiradoraId() {
-		return operadorMineiradoraId;
+	public Long getUsuarioMineradoraId() {
+		return usuarioMineradoraId;
 	}
 
-	public void setOperadorMineiradoraId(Long operadorMineiradoraId) {
-		this.operadorMineiradoraId = operadorMineiradoraId;
+	public void setUsuarioMineradoraId(Long usuarioMineradoraId) {
+		this.usuarioMineradoraId = usuarioMineradoraId;
 	}
 
-	public Date getDataAtividade() {
-		return dataAtividade;
+	public Date getDataInicioAtividade() {
+		return dataInicioAtividade;
 	}
 
-	public void setDataAtividade(Date dataAtividade) {
-		this.dataAtividade = dataAtividade;
+	public void setDataInicioAtividade(Date dataInicioAtividade) {
+		this.dataInicioAtividade = dataInicioAtividade;
 	}
 
 	public Long getGestorId() {
