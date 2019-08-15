@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 @Entity
@@ -24,13 +25,16 @@ public class AtividadePerfuracao {
 
 	private Date dataInicioAtividade = new Date();
 
-	private Date dataPrevisaoTerminoAtividade = new Date();
+	private Date dataTerminoAtividade = new Date();
 
-	private String observacoes;
+	private String orientacoes;
 
 	@OneToMany(mappedBy = "atividadePerfuracao")
 	private List<RegistroOcorrencia> ocorrencias;
 
+	@Transient
+	private Long totalElementos;
+	
 	public Long getId() {
 		return id;
 	}
@@ -63,20 +67,20 @@ public class AtividadePerfuracao {
 		this.gestorId = gestorId;
 	}
 
-	public Date getDataPrevisaoTerminoAtividade() {
-		return dataPrevisaoTerminoAtividade;
+	public Date getDataTerminoAtividade() {
+		return dataTerminoAtividade;
+	}
+	
+	public void setDataTerminoAtividade(Date dataTerminoAtividade) {
+		this.dataTerminoAtividade = dataTerminoAtividade;
 	}
 
-	public void setDataPrevisaoTerminoAtividade(Date dataPrevisaoTerminoAtividade) {
-		this.dataPrevisaoTerminoAtividade = dataPrevisaoTerminoAtividade;
+	public String getOrientacoes() {
+		return orientacoes;
 	}
-
-	public String getObservacoes() {
-		return observacoes;
-	}
-
-	public void setObservacoes(String observacoes) {
-		this.observacoes = observacoes;
+	
+	public void setOrientacoes(String orientacoes) {
+		this.orientacoes = orientacoes;
 	}
 
 	public List<RegistroOcorrencia> getOcorrencias() {
@@ -85,6 +89,14 @@ public class AtividadePerfuracao {
 
 	public void setOcorrencias(List<RegistroOcorrencia> ocorrencias) {
 		this.ocorrencias = ocorrencias;
+	}
+	
+	public Long getTotalElementos() {
+		return totalElementos;
+	}
+	
+	public void setTotalElementos(Long totalElementos) {
+		this.totalElementos = totalElementos;
 	}
 
 }

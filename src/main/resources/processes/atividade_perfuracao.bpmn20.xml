@@ -8,8 +8,8 @@
         <flowable:formProperty id="usuarioMineradoraId" name="usuarioMineradoraId" type="long"></flowable:formProperty>
         <flowable:formProperty id="gestorId" name="gestorId" type="long"></flowable:formProperty>
         <flowable:formProperty id="dataInicioAtividade" name="dataInicioAtividade" type="date" datePattern="MM-dd-yyyy hh:mm"></flowable:formProperty>
-        <flowable:formProperty id="dataPrevisaoTerminoAtividade" name="dataPrevisaoTerminoAtividade" type="date" datePattern="MM-dd-yyyy hh:mm"></flowable:formProperty>
-        <flowable:formProperty id="observacoes" name="observacoes" type="string"></flowable:formProperty>
+        <flowable:formProperty id="dataTerminoAtividade" name="dataTerminoAtividade" type="date" datePattern="MM-dd-yyyy hh:mm"></flowable:formProperty>
+        <flowable:formProperty id="orientacoes" name="orientacoes" type="string"></flowable:formProperty>
       </extensionElements>
     </startEvent>
     <userTask id="organizaLocalExtracao" name="Organizar local para extração do minério" flowable:assignee="${usuarioMineradoraId}" flowable:formKey="organizaLocalExtracao" flowable:formFieldValidation="true">
