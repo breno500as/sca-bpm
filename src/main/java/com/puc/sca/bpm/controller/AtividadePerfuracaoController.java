@@ -29,6 +29,13 @@ import com.puc.sca.bpm.entity.AtividadePerfuracao;
 import com.puc.sca.bpm.repository.AtividadePerfuracaoRepository;
 import com.puc.sca.integration.util.Constants;
 
+
+/**
+ * Rest controller para bpm de atividades de perfuração.
+ * @author breno
+ *
+ */
+
 @RestController
 @RequestMapping("atividades-perfuracao")
 public class AtividadePerfuracaoController {
