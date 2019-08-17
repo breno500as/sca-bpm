@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -110,7 +111,8 @@ public class AtividadePerfuracaoController {
 	
 	@GetMapping("{id}")
 	public AtividadePerfuracao findById(@PathVariable(value = "id") Long id) {
-		return this.atividadePerfuracaoRepository.findById(id).get();
+		 Optional<AtividadePerfuracao> oAtv = this.atividadePerfuracaoRepository.findById(id);
+		return  oAtv.isPresent() ? oAtv.get() : null;
 	}
 	
 	@GetMapping("/tarefas-por-operador/{usuarioMineradoraId}")
