@@ -1,28 +1,29 @@
 version: "3"
 services:
-  bpm-db:
+
+   bpm-web:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    container_name: bpm-web
+    image: sca-bpm
+    ports:
+      - '8092:8092'
+    depends_on:
+      - bpm-db
+    environment:
+    - PORT=8092
+    - SPRING_PROFILES_ACTIVE=$SPRING_PROFILES_ACTIVE
+  
+   bpm-db:
     image: postgres:latest
     ports:
       - 5432
-    network_mode: bridge
     environment:
          - POSTGRES_PASSWORD=root
          - POSTGRES_USER=postgres
          - POSTGRES_DB=sca-bpm
-         - SPRING_PROFILES_ACTIVE=$SPRING_PROFILES_ACTIVE 
-         
-  bpm-web:
-    image: bpm-web:v26
-    network_mode: bridge
-    container_name: bpm-web
-    expose:
-      - 8092
-    ports:
-      - 8092:8092
-    depends_on:
-      - bpm-db
-    links:
-      - bpm-db
+         - SPRING_PROFILES_ACTIVE=$SPRING_PROFILES_ACTIVE
  
 #docker system prune //limpa o cache
 #sudo SPRING_PROFILES_ACTIVE=hml TESTE=teste docker-compose up --build
