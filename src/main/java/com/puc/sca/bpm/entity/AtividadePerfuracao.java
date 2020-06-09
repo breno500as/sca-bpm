@@ -11,6 +11,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
+ 
+
 @Entity
 public class AtividadePerfuracao {
 
