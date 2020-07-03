@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.puc.sca.bpm.dto.TaskDTO;
 import com.puc.sca.bpm.entity.AtividadePerfuracao;
 import com.puc.sca.bpm.repository.AtividadePerfuracaoRepository;
-import com.puc.util.pojo.Constants;
+import com.puc.sca.util.pojo.Constants;
 
 
 /**
