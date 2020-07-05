@@ -36,7 +36,7 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
 	
 	
 	@ExceptionHandler(BpmException.class)
-	public final ResponseEntity<ExceptionResponse> handleExpectationFailedExceptions(ResourceNotFoundException ex, WebRequest request) {
+	public final ResponseEntity<ExceptionResponse> handleExpectationFailedExceptions(BpmException ex, WebRequest request) {
 		final ExceptionResponse exceptionResponse = 
 				new ExceptionResponse(
 						new Date(),
