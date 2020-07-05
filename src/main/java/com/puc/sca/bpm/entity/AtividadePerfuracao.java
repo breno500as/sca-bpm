@@ -15,6 +15,9 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 public class AtividadePerfuracao {
+	
+	
+	public static final String ATIVIDADE_NAO_ENCONTRADA = "Atividade de perfuração não encontrada!";
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)

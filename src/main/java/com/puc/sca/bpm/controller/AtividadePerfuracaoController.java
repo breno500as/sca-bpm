@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,6 +15,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.rest.webmvc.ResourceNotFoundException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -52,11 +53,11 @@ public class AtividadePerfuracaoController {
 	
 	
 	@PostMapping
-	public AtividadePerfuracao startaProcessoAtividadePerfuracao(@RequestBody AtividadePerfuracao atividadePerfuracao, HttpServletRequest request) {
+	public ResponseEntity<AtividadePerfuracao> startaProcessoAtividadePerfuracao(@RequestBody AtividadePerfuracao atividadePerfuracao, HttpServletRequest request) {
 
 		String idUsuarioLogado = request.getParameter(Constants.ID_USUARIO_LOGADO);
 		
-		List<TaskDTO>  tasks =  this.getTarefasPorOperadorMineiradora(atividadePerfuracao.getUsuarioMineradoraId().toString());
+		List<TaskDTO>  tasks =  this.getTasks(atividadePerfuracao.getUsuarioMineradoraId().toString());
 		
 		if (tasks != null && !tasks.isEmpty()) {
 			throw new RuntimeException("Atenção, já existe uma atividade cadastrada para esse operador, conclua a mesma antes iniciar uma nova.");
@@ -77,12 +78,12 @@ public class AtividadePerfuracaoController {
 	 
 		this.runtimeService.startProcessInstanceByKey("atividadePerfuracao", variables);
 		
-		return atv;
+		return ResponseEntity.ok(atv);
 		
 	}
 	
 	@GetMapping
-	public Iterable<AtividadePerfuracao> findAll(@RequestParam("page") Integer page, 
+	public ResponseEntity<Iterable<AtividadePerfuracao>> findAll(@RequestParam("page") Integer page, 
 			                        @RequestParam("size") Integer size,
 			                        @RequestParam(value = "usuarioMineradoraId", required = false) Long usuarioMineradoraId,
 			                        @RequestParam(name = "sort", defaultValue = "id") String sort) {
@@ -102,29 +103,34 @@ public class AtividadePerfuracaoController {
 				atividadesPerfuracao.get(0).setTotalElementos(result.getTotalElements());
 			}
 			
-			return atividadesPerfuracao;
+			return ResponseEntity.ok(atividadesPerfuracao);
 		}
 		
-		return Collections.emptyList();
+		return ResponseEntity.ok(Collections.emptyList());
 		
 	}
 	
 	@GetMapping("{id}")
-	public AtividadePerfuracao findById(@PathVariable(value = "id") Long id) {
-		 Optional<AtividadePerfuracao> oAtv = this.atividadePerfuracaoRepository.findById(id);
-		return  oAtv.isPresent() ? oAtv.get() : null;
+	public ResponseEntity<AtividadePerfuracao> findById(@PathVariable(value = "id") Long id) {
+		final AtividadePerfuracao oAtv = this.atividadePerfuracaoRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(AtividadePerfuracao.ATIVIDADE_NAO_ENCONTRADA)) ;
+		return  ResponseEntity.ok(oAtv);
 	}
 	
 	@GetMapping("/tarefas-por-operador/{usuarioMineradoraId}")
-	public List<TaskDTO> getTarefasPorOperadorMineiradora(@PathVariable("usuarioMineradoraId") String operadorMineiradoraId) {
-		return this.taskService
-                .createTaskQuery()
-                .taskAssignee(operadorMineiradoraId)
-                .list().stream().map(t -> new TaskDTO(t.getId(),t.getTaskDefinitionKey(), t.getName())).collect(Collectors.toList());
+	public ResponseEntity<List<TaskDTO>> getTarefasPorOperadorMineiradora(@PathVariable("usuarioMineradoraId") String operadorMineiradoraId) {
+		final List<TaskDTO> tasks = this.getTasks(operadorMineiradoraId);
+		return ResponseEntity.ok(tasks);
+	}
+	
+	private List<TaskDTO> getTasks(String operadorMineiradoraId) {
+		return this.taskService.createTaskQuery()
+                   .taskAssignee(operadorMineiradoraId)
+                   .list().stream().map(t -> new TaskDTO(t.getId(),t.getTaskDefinitionKey(), t.getName()))
+                   .collect(Collectors.toList());
 	}
 	
 	@PutMapping("{taskId}")
-	public void concluiAtividadePerfuracao(@PathVariable("taskId") String taskId, @RequestBody TaskDTO taskDTO) {
+	public ResponseEntity<?> concluiAtividadePerfuracao(@PathVariable("taskId") String taskId, @RequestBody TaskDTO taskDTO) {
 
 		HashMap<String, Object> variables = new HashMap<String, Object>();
 		if (taskDTO.getActionType() != null) {
@@ -132,6 +138,8 @@ public class AtividadePerfuracaoController {
 		}
 		
 		this.taskService.complete(taskId, variables);
+		
+		return ResponseEntity.noContent().build();
 
 	}
 }
