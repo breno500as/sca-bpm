@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.puc.sca.bpm.dto.TaskDTO;
 import com.puc.sca.bpm.entity.AtividadePerfuracao;
+import com.puc.sca.bpm.exception.BpmException;
 import com.puc.sca.bpm.repository.AtividadePerfuracaoRepository;
 import com.puc.sca.util.pojo.Constants;
 
@@ -55,18 +56,19 @@ public class AtividadePerfuracaoController {
 	@PostMapping
 	public ResponseEntity<AtividadePerfuracao> startaProcessoAtividadePerfuracao(@RequestBody AtividadePerfuracao atividadePerfuracao, HttpServletRequest request) {
 
-		String idUsuarioLogado = request.getParameter(Constants.ID_USUARIO_LOGADO);
 		
-		List<TaskDTO>  tasks =  this.getTasks(atividadePerfuracao.getUsuarioMineradoraId().toString());
+		final String idUsuarioLogado = request.getParameter(Constants.ID_USUARIO_LOGADO);
+		
+		final List<TaskDTO>  tasks =  this.getTasks(atividadePerfuracao.getUsuarioMineradoraId().toString());
 		
 		if (tasks != null && !tasks.isEmpty()) {
-			throw new RuntimeException("Atenção, já existe uma atividade cadastrada para esse operador, conclua a mesma antes iniciar uma nova.");
+			throw new BpmException("Atenção, já existe uma atividade cadastrada para esse operador!", "Conclua a atividade antes iniciar uma nova.");
 		}
 		
 		atividadePerfuracao.setGestorId(Long.parseLong(idUsuarioLogado));
 		AtividadePerfuracao atv = this.atividadePerfuracaoRepository.save(atividadePerfuracao);
 		
-		Map<String, Object> variables = new HashMap<String, Object>();
+		final Map<String, Object> variables = new HashMap<>();
 		
 		variables.put("id", atividadePerfuracao.getId());
 		variables.put("gestorId", idUsuarioLogado);
@@ -87,7 +89,7 @@ public class AtividadePerfuracaoController {
 			                        @RequestParam("size") Integer size,
 			                        @RequestParam(value = "usuarioMineradoraId", required = false) Long usuarioMineradoraId,
 			                        @RequestParam(name = "sort", defaultValue = "id") String sort) {
-		Pageable pageable = PageRequest.of(page -1, size, Sort.by(sort));
+		final Pageable pageable = PageRequest.of(page -1, size, Sort.by(sort));
 		
 		Page<AtividadePerfuracao> result =  null;
 		
@@ -132,7 +134,7 @@ public class AtividadePerfuracaoController {
 	@PutMapping("{taskId}")
 	public ResponseEntity<?> concluiAtividadePerfuracao(@PathVariable("taskId") String taskId, @RequestBody TaskDTO taskDTO) {
 
-		HashMap<String, Object> variables = new HashMap<String, Object>();
+		final HashMap<String, Object> variables = new HashMap<>();
 		if (taskDTO.getActionType() != null) {
 			variables.put("actionType", taskDTO.getActionType());
 		}
