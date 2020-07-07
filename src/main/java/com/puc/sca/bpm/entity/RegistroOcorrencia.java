@@ -1,6 +1,8 @@
 package com.puc.sca.bpm.entity;
 
-import java.util.Date;
+
+
+import java.time.LocalDateTime;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -22,7 +24,7 @@ public class RegistroOcorrencia {
 
 	private String descricao;
 
-	private Date dataOcorrencia;
+	private LocalDateTime dataOcorrencia;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	private AtividadePerfuracao atividadePerfuracao;
@@ -46,11 +48,11 @@ public class RegistroOcorrencia {
 		this.descricao = descricao;
 	}
 
-	public Date getDataOcorrencia() {
+	public LocalDateTime getDataOcorrencia() {
 		return dataOcorrencia;
 	}
 
-	public void setDataOcorrencia(Date dataOcorrencia) {
+	public void setDataOcorrencia(LocalDateTime dataOcorrencia) {
 		this.dataOcorrencia = dataOcorrencia;
 	}
 

@@ -1,6 +1,6 @@
 package com.puc.sca.bpm.entity;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -28,9 +28,9 @@ public class AtividadePerfuracao {
 
 	private Long gestorId;
 
-	private Date dataInicioAtividade = new Date();
+	private LocalDateTime dataInicioAtividade = LocalDateTime.now();
 
-	private Date dataTerminoAtividade = new Date();
+	private LocalDateTime dataTerminoAtividade = LocalDateTime.now();
 
 	private String orientacoes;
 
@@ -56,11 +56,11 @@ public class AtividadePerfuracao {
 		this.usuarioMineradoraId = usuarioMineradoraId;
 	}
 
-	public Date getDataInicioAtividade() {
+	public LocalDateTime getDataInicioAtividade() {
 		return dataInicioAtividade;
 	}
 
-	public void setDataInicioAtividade(Date dataInicioAtividade) {
+	public void setDataInicioAtividade(LocalDateTime dataInicioAtividade) {
 		this.dataInicioAtividade = dataInicioAtividade;
 	}
 
@@ -72,11 +72,11 @@ public class AtividadePerfuracao {
 		this.gestorId = gestorId;
 	}
 
-	public Date getDataTerminoAtividade() {
+	public LocalDateTime getDataTerminoAtividade() {
 		return dataTerminoAtividade;
 	}
 	
-	public void setDataTerminoAtividade(Date dataTerminoAtividade) {
+	public void setDataTerminoAtividade(LocalDateTime dataTerminoAtividade) {
 		this.dataTerminoAtividade = dataTerminoAtividade;
 	}
 
