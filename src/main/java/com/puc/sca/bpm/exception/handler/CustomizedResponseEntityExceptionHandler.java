@@ -20,7 +20,7 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
 	public final ResponseEntity<ExceptionResponse> handleAllExceptions(Exception ex, WebRequest request) {
 		final ExceptionResponse exceptionResponse = 
 				new ExceptionResponse(
-						 LocalDateTime.now(),
+						LocalDateTime.now(),
 						request.getDescription(false),
 						ex.getMessage());
 		return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -30,7 +30,7 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
 	public final ResponseEntity<ExceptionResponse> handleBadRequestExceptions(ResourceNotFoundException ex, WebRequest request) {
 		final ExceptionResponse exceptionResponse = 
 				new ExceptionResponse(
-						 LocalDateTime.now(),
+						LocalDateTime.now(),
 						request.getDescription(false),
 						ex.getMessage());
 		return new ResponseEntity<>(exceptionResponse, HttpStatus.NOT_FOUND);
@@ -41,7 +41,7 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
 	public final ResponseEntity<ExceptionResponse> handleExpectationFailedExceptions(BpmException ex, WebRequest request) {
 		final ExceptionResponse exceptionResponse = 
 				new ExceptionResponse(
-						 LocalDateTime.now(),
+						LocalDateTime.now(),
 						request.getDescription(false),
 						ex.getMessages());
 		return new ResponseEntity<>(exceptionResponse, HttpStatus.EXPECTATION_FAILED);
