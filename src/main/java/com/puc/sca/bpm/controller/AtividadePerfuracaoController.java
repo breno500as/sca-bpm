@@ -114,7 +114,7 @@ public class AtividadePerfuracaoController {
 	
 	@GetMapping("{id}")
 	public ResponseEntity<AtividadePerfuracao> findById(@PathVariable(value = "id") Long id) {
-		final AtividadePerfuracao oAtv = this.atividadePerfuracaoRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(AtividadePerfuracao.ATIVIDADE_NAO_ENCONTRADA)) ;
+		final AtividadePerfuracao oAtv = this.atividadePerfuracaoRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(AtividadePerfuracao.NAO_ENCONTRADA)) ;
 		return  ResponseEntity.ok(oAtv);
 	}
 	

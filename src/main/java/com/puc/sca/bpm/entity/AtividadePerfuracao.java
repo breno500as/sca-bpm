@@ -17,7 +17,7 @@ import javax.validation.constraints.NotNull;
 public class AtividadePerfuracao {
 	
 	
-	public static final String ATIVIDADE_NAO_ENCONTRADA = "Atividade de perfuração não encontrada!";
+	public static final String NAO_ENCONTRADA = "Atividade de perfuração não encontrada!";
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
